@@ -1,0 +1,5 @@
+*.o
+example/example-*
+example/example
+*.a
+*.so
