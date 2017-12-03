@@ -3,22 +3,29 @@
 #include <fstream>
 #include <sstream>
 #include <unistd.h>
+#include <cstdlib>
 #include "picotest.h"
 #include "../gzip.hpp"
 
 using namespace std;
 using namespace compression;
 
-static bool slurp(const char* filename, string& content) {
+static bool random_string(unsigned int length, string& content) {
   std::ostringstream out;
   ifstream in;
-  in.open(filename, ifstream::in);
+  in.open("/dev/urandom", ifstream::in);
   if (in.fail()) {
     return false;
   }
-  out << in.rdbuf();
+  char buf[64];
+  for (;;) {
+    in.read(buf, 64);
+    content.append(buf, 64);
+    if (content.size() > length) {
+      break;
+    }
+  }
   in.close();
-  content.assign(out.str());
   return true;
 }
 
@@ -58,14 +65,9 @@ void basic_test() {
 }
 
 void loop_test() {
-  string c;
-  slurp("../libcompression_gzip.a", c);
   string plain;
-  for (int i = 0; i < 10000; ++i) {
-    plain += c;
-    if (plain.size() > 256*1024) {
-      break;
-    }
+  if (!random_string(256*1024, plain)) {
+    exit(1);
   }
   note("plain string size: %ld", plain.size());
 
@@ -73,17 +75,20 @@ void loop_test() {
   note("loop start: times %d, pid %d", times, getpid());
   fflush(stdout);
 
+  bool success = true;
   for (int i = 0; i < times; ++i) {
     string gzipped;
-    gzip::compress(plain, gzipped);
-    gzip::is_gzip(gzipped);
+    success &= gzip::compress(plain, gzipped);
+    success &= gzip::is_gzip(gzipped);
     string back;
-    gzip::decompress(gzipped, back);
+    success &= gzip::decompress(gzipped, back);
+    success &= (plain == back);
     if (i % (times/10) == 0) {
-      ok(plain == back);
+      note("%6d / %d (size %ld -> %ld)", i, times, plain.size(), gzipped.size());
       fflush(stdout);
     }
   }
+  ok(success);
 }
 
 int main() {
