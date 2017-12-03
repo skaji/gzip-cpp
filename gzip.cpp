@@ -8,11 +8,9 @@ const size_t BUFFER_SIZE = 65536;
 using std::ostringstream;
 using std::string;
 
-namespace {
-
 typedef int (*FUNC)(z_stream* z, int z_const);
 
-bool call_(z_stream& z, FUNC func, int compress_const, const string& in, string& out) {
+static bool call_(z_stream& z, FUNC func, int compress_const, const string& in, string& out) {
   char outbuf[BUFFER_SIZE];
   z.next_in = (Bytef*)in.c_str();
   z.avail_in = in.size();
@@ -42,19 +40,14 @@ bool call_(z_stream& z, FUNC func, int compress_const, const string& in, string&
   return true;
 }
 
-}
-
 namespace compression {
-namespace cpp {
+namespace gzip {
 
-Gzip::Gzip() {}
-Gzip::~Gzip() {}
-
-bool Gzip::is_gzip(const string& in) {
+bool is_gzip(const string& in) {
   return in.size() > 1 && in[0] == '\x1F' && in[1] == '\x8B';
 }
 
-bool Gzip::compress(const string& in, string& out) {
+bool compress(const string& in, string& out) {
   z_stream z;
   z.zalloc = Z_NULL;
   z.zfree = Z_NULL;
@@ -66,7 +59,7 @@ bool Gzip::compress(const string& in, string& out) {
   return (deflateEnd(&z) == Z_OK) && ok;
 }
 
-bool Gzip::decompress(const string& in, string& out) {
+bool decompress(const string& in, string& out) {
   z_stream z;
   z.zalloc = Z_NULL;
   z.zfree = Z_NULL;

@@ -7,6 +7,7 @@
 #include <sstream>
 #include "gzip.hpp"
 using namespace std;
+using namespace compression;
 
 static bool slurp(const char* filename, string& content) {
   std::ostringstream out;
@@ -34,16 +35,14 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  compression::cpp::Gzip gzip;
-
   string gzipped;
-  if (!gzip.compress(plain, gzipped)) {
+  if (!gzip::compress(plain, gzipped)) {
     cerr << "Failed to gzip data" << endl;
     exit(1);
   }
 
   string back;
-  if (!gzip.decompress(gzipped, back)) {
+  if (!gzip::decompress(gzipped, back)) {
     cerr << "Failed to gunzip data" << endl;
     exit(1);
   }
@@ -53,7 +52,7 @@ int main(int argc, char *argv[]) {
   cerr << " gzipped size = " << gzipped.size() << endl;
   cerr << endl;
 
-  if (!gzip.is_gzip(gzipped)) {
+  if (!gzip::is_gzip(gzipped)) {
     cerr << "SOMETHING WRONG!" << endl;
     exit(1);
   }

@@ -1,19 +1,14 @@
-#ifndef COMPRESSION_CPP_GZIP_HPP
-#define COMPRESSION_CPP_GZIP_HPP
+#ifndef COMPRESSION_GZIP_HPP
+#define COMPRESSION_GZIP_HPP
 
 #include <string>
 
 namespace compression {
-namespace cpp {
+namespace gzip {
 
-class Gzip {
- public:
-  Gzip();
-  ~Gzip();
-  bool compress(const std::string& in, std::string& out);
-  bool decompress(const std::string& in, std::string& out);
-  bool is_gzip(const std::string& in);
-};
+bool is_gzip(const std::string& in);
+bool compress(const std::string& in, std::string& out);
+bool decompress(const std::string& in, std::string& out);
 
 }
 }
