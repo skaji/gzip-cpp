@@ -89,6 +89,5 @@ void loop_test() {
 int main() {
   subtest("basic", basic_test);
   subtest("loop", loop_test);
-  done_testing();
-  return 0;
+  return done_testing();
 }

@@ -1,5 +1,3 @@
-CFLAGS = -Wall -Werror -Wextra
-
 run-test: test
 	prove -v ./test
 
