@@ -1,4 +1,4 @@
-# gzip in C++
+# gzip in C++ [![Build Status](https://travis-ci.org/skaji/gzip-cpp.svg?branch=master)](https://travis-ci.org/skaji/gzip-cpp)
 
 Simple zlib wrapper for C++
 
@@ -22,6 +22,8 @@ int main() {
 # Based on
 
 https://oku.edu.mie-u.ac.jp/~okumura/compression/zlib.html
+
+http://s-yata.jp/docs/zlib/
 
 # Author
 
